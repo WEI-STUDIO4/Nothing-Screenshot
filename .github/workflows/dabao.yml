@@ -27,7 +27,8 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --onefile --noconsole --name "NothingScreenshot" nothing_screenshot.py
+        # 注意：文件名包含空格，要用引号包裹
+        pyinstaller --onefile --noconsole --name "NothingScreenshot" "Nothing Screenshot.py"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
