@@ -194,7 +194,7 @@ class ScreenshotApp:
         
         self.flash_var = tk.BooleanVar(value=self.config["flash_screen"])
         flash_check = ttk.Checkbutton(options_frame,
-                                     text="截图时屏幕闪白",
+                                     text="截图后100ms屏幕闪白",
                                      variable=self.flash_var,
                                      style='Custom.TLabel')
         flash_check.pack(anchor='w')
@@ -294,11 +294,7 @@ class ScreenshotApp:
     def take_screenshot(self):
         """执行截图操作 - 无通知版本"""
         try:
-            # 屏幕闪白效果
-            if self.config["flash_screen"]:
-                self.flash_screen()
-            
-            # 截图
+            # 先截图
             screenshot = pyautogui.screenshot()
             
             # 生成文件名
@@ -311,6 +307,10 @@ class ScreenshotApp:
             
             # 更新计数但不显示通知
             self.screenshot_count += 1
+            
+            # 截图完成后100ms再执行闪屏效果
+            if self.config["flash_screen"]:
+                self.root.after(100, self.flash_screen)
             
             return filepath
             
