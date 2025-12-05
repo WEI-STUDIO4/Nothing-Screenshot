@@ -1,0 +1,7 @@
+# requirements.txt
+pyautogui>=0.9.53
+keyboard>=0.13.5
+pillow>=9.0.0
+pystray>=0.19.0
+pywin32>=300
+pyinstaller>=5.0.0
