@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nothing Screenshot 無 - 瞬间记录，无痕体验</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --black: #000000;
+            --dark-gray: #0a0a0a;
+            --medium-gray: #1a1a1a;
+            --light-gray: #2a2a2a;
+            --silver: #e0e0e0;
+            --silver-light: #f0f0f0;
+            --silver-dark: #c0c0c0;
+            --white: #ffffff;
+            --accent-white: #ffffff;
+            --subtle-white: rgba(255, 255, 255, 0.95);
+            --subtle-gray: rgba(255, 255, 255, 0.7);
+            --subtle-border: rgba(255, 255, 255, 0.12);
+            --glass-bg: rgba(0, 0, 0, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+            --gradient-text: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        /* 流体光效背景 */
+        .fluid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 50%, rgba(30, 30, 30, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(50, 50, 50, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(40, 40, 40, 0.12) 0%, transparent 50%);
+            background-color: #000000;
+        }
+        
+        /* 银灰色流体动画 */
+        .fluid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(224, 224, 224, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(240, 240, 240, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(192, 192, 192, 0.15) 0%, transparent 50%);
+            filter: blur(60px);
+            animation: fluidMove 20s ease-in-out infinite alternate;
+        }
+        
+        @keyframes fluidMove {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(5%, 3%) scale(1.05);
+            }
+            50% {
+                transform: translate(-3%, 5%) scale(1.02);
+            }
+            75% {
+                transform: translate(4%, -2%) scale(1.03);
+            }
+            100% {
+                transform: translate(-2%, -3%) scale(1);
+            }
+        }
+        
+        /* 光点效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(224, 224, 224, 0.2);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 毛玻璃效果 */
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+            background-image: var(--gradient);
+        }
+        
+        /* 头部导航 */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+        
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--subtle-white);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--white);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--white);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 主标题区域 */
+        .hero {
+            padding: 180px 0 120px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+        }
+        
+        .hero-tagline {
+            font-size: 2rem;
+            color: var(--subtle-white);
+            margin-bottom: 40px;
+            font-weight: 300;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.4;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--subtle-gray);
+            max-width: 800px;
+            margin: 0 auto 60px;
+            font-weight: 400;
+            line-height: 1.8;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 80px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 8px;
+            display: block;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--subtle-gray);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+        
+        /* 故事部分 */
+        .story-section {
+            margin-bottom: 120px;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 80px;
+            font-weight: 800;
+            color: var(--accent-white);
+            letter-spacing: -1px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .story-card {
+            padding: 60px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .story-title {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: var(--accent-white);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .story-title i {
+            color: var(--subtle-white);
+        }
+        
+        .story-content {
+            font-size: 1.3rem;
+            color: var(--subtle-white);
+            line-height: 1.9;
+            margin-bottom: 30px;
+        }
+        
+        .quote {
+            border-left: 4px solid rgba(255, 255, 255, 0.3);
+            padding-left: 30px;
+            font-style: italic;
+            color: var(--silver-light);
+            margin: 40px 0;
+            font-size: 1.4rem;
+            line-height: 1.8;
+        }
+        
+        /* 核心优势 */
+        .advantages {
+            margin-bottom: 120px;
+        }
+        
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+        
+        .advantage-card {
+            padding: 50px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .advantage-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .advantage-icon {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .advantage-title {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            font-weight: 700;
+            color: var(--accent-white);
+        }
+        
+        .advantage-description {
+            color: var(--subtle-white);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            font-size: 1.2rem;
+        }
+        
+        .advantage-list {
+            list-style-type: none;
+            margin-top: 30px;
+        }
+        
+        .advantage-list li {
+            padding: 12px 0;
+            color: var(--silver-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .advantage-list i {
+            color: var(--white);
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+        
+        /* 对比部分 */
+        .comparison-section {
+            margin-bottom: 120px;
+        }
+        
+        .comparison-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        @media (max-width: 1024px) {
+            .comparison-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .comparison-card {
+            padding: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comparison-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .comparison-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .badge {
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-nothing {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .badge-traditional {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff8a8a;
+            border: 1px solid rgba(255, 80, 80, 0.3);
+        }
+        
+        .workflow {
+            margin-top: 30px;
+        }
+        
+        .workflow-title {
+            font-size: 1.3rem;
+            color: var(--silver);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        
+        .step:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            color: var(--silver-light);
+            font-size: 1.1rem;
+        }
+        
+        .step-nothing {
+            background: rgba(100, 220, 100, 0.1);
+            border-color: rgba(100, 220, 100, 0.2);
+        }
+        
+        .step-nothing:hover {
+            background: rgba(100, 220, 100, 0.15);
+        }
+        
+        /* 技术特性 */
+        .features-section {
+            margin-bottom: 120px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-item {
+            padding: 40px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .feature-item i {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-item h3 {
+            font-size: 1.6rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .feature-item p {
+            color: var(--silver-light);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        /* CTA区域 */
+        .cta-section {
+            text-align: center;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 120px;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .cta-title {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            font-weight: 900;
+            line-height: 1.1;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .cta-subtitle {
+            font-size: 1.5rem;
+            color: var(--silver-light);
+            max-width: 800px;
+            margin: 0 auto 60px;
+            line-height: 1.7;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 22px 48px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border-radius: 18px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .requirements {
+            color: var(--silver);
+            font-size: 1rem;
+            margin-top: 30px;
+        }
+        
+        .download-info {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .download-info h4 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--accent-white);
+            font-weight: 700;
+        }
+        
+        .download-info ul {
+            list-style-type: none;
+            text-align: left;
+            color: var(--silver-light);
+        }
+        
+        .download-info li {
+            padding: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .download-info i {
+            color: var(--white);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        /* 开发者抖音 */
+        .developer-section {
+            text-align: center;
+            padding: 80px 0;
+            margin-bottom: 80px;
+        }
+        
+        .developer-card {
+            padding: 50px;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .developer-title {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: var(--accent-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .developer-description {
+            font-size: 1.3rem;
+            color: var(--silver-light);
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        
+        .developer-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 40px;
+            background: rgba(255, 59, 92, 0.2);
+            border: 1px solid rgba(255, 59, 92, 0.3);
+            border-radius: 16px;
+            color: #ff8a9c;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.3rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .developer-link:hover {
+            background: rgba(255, 59, 92, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 59, 92, 0.3);
+        }
+        
+        .developer-link i {
+            font-size: 1.5rem;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--silver);
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: var(--silver-light);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes floatLogo {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        .delay-4 {
+            animation-delay: 0.8s;
+        }
+        
+        .delay-5 {
+            animation-delay: 1s;
+        }
+        
+        .logo-icon {
+            animation: floatLogo 6s ease-in-out infinite;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 30px;
+            }
+            
+            .hero-title {
+                font-size: 4rem;
+            }
+            
+            .hero-tagline {
+                font-size: 1.8rem;
+            }
+            
+            .advantages-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .header-nav {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-tagline {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .story-card, .advantage-card, .comparison-card, .feature-item, .developer-card {
+                padding: 30px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 350px;
+                justify-content: center;
+            }
+            
+            .stats {
+                gap: 30px;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .highlight {
+            color: var(--white);
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            color: var(--silver-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- 流体光效背景 -->
+    <div class="fluid-background"></div>
+    <div class="fluid-overlay"></div>
+    <div class="particles" id="particles-container"></div>
+    
+    <!-- 固定头部导航 -->
+    <nav class="header-nav">
+        <a href="#" class="logo-brand">
+            <div class="logo-icon">無</div>
+            <div class="brand-name">NOTHING SCREENSHOT</div>
+        </a>
+        
+        <div class="nav-links">
+            <a href="#features">特性</a>
+            <a href="#comparison">对比</a>
+            <a href="#download">下载</a>
+            <a href="#developer">开发者</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 主标题区域 -->
+        <section class="hero">
+            <h1 class="hero-title fade-in">瞬间记录，<br>无痕体验</h1>
+            <p class="hero-tagline fade-in delay-1">让截图回归纯粹，让瞬间成为永恒</p>
+            <p class="hero-subtitle fade-in delay-2">
+                一个为记录瞬间而生的工具。没有弹窗，没有干扰，只有纯粹的瞬间记录。
+                在按下快捷键的瞬间完成一切，然后悄然退场，让体验继续。
+            </p>
+            
+            <div class="stats fade-in delay-3">
+                <div class="stat-item">
+                    <span class="stat-number">1</span>
+                    <div class="stat-label">步操作</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">&lt;200ms</span>
+                    <div class="stat-label">响应时间</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2MB</span>
+                    <div class="stat-label">安装大小</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <div class="stat-label">干扰弹窗</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 故事 -->
+        <section class="story-section" id="story">
+            <h2 class="section-title fade-in">故事开始的地方</h2>
+            <div class="story-card glass-effect fade-in delay-1">
+                <div class="story-content">
+                    <p>深夜，一场激战正酣。我在关键时刻按下截图键，准备永远保存那完美的一帧。</p>
+                    <p>但系统弹窗先跳了出来："截图已保存"。</p>
+                    <p>弹窗消失时，完美的画面也消失了。那个瞬间，永远错过了。</p>
+                    <div class="quote">
+                        "我意识到：截图工具不该打扰瞬间。它应该在按下快捷键的瞬间完成一切，然后悄然退场，让体验继续。"
+                    </div>
+                    <p>于是有了 Nothing Screenshot——一个只为记录瞬间而存在的工具。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 核心优势 -->
+        <section class="advantages" id="features">
+            <h2 class="section-title fade-in">核心特性 ✨</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card glass-effect fade-in delay-1">
+                    <div class="advantage-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="advantage-title">极速响应</h3>
+                    <p class="advantage-description">
+                        零延迟操作：按下快捷键即完成截图，无等待、无确认。在人类感知阈值内完成（&lt;200ms）。
+                    </p>
+                    <ul class="advantage-list">
+                        <li><i class="fas fa-check"></i> 无痕体验：不弹窗、不提示、不打断当前操作</li>
+                        <li><i class="fas fa-check"></i> 隐形存在：启动后完全隐身系统托盘</li>
+                        <li><i class="fas fa-check"></i> 肌肉记忆信任：每次行为完全一致</li>
+                    </ul>
+                </div>
+                
+                <div class="advantage-card glass-effect fade-in delay-2">
+                    <div class="advantage-icon">
+                        <i class="fas fa-ghost"></i>
+                    </div>
+                    <h3 class="advantage-title">沉浸式友好</h3>
+                    <p class="advantage-description">
+                        全局热键响应：全屏应用、游戏、演示中均可使用。不会打断你的心流状态。
+                    </p>
+                    <ul class="advantage-list">
+                        <li><i class="fas fa-check"></i> 微光反馈：可选的屏幕闪白效果，如快门般轻触</li>
+                        <li><i class="fas fa-check"></i> 智能归档：自动时间戳命名，整齐保存在专属文件夹</li>
+                        <li><i class="fas fa-check"></i> 多显示器支持：稳定可靠，覆盖所有屏幕</li>
+                    </ul>
+                </div>
+                
+                <div class="advantage-card glass-effect fade-in delay-3">
+                    <div class="advantage-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="advantage-title">极简哲学</h3>
+                    <p class="advantage-description">
+                        简约的深灰色界面，减少视觉负担。扁平化设计，专注功能本质。
+                    </p>
+                    <ul class="advantage-list">
+                        <li><i class="fas fa-check"></i> "無"字符图标——存在但不彰显</li>
+                        <li><i class="fas fa-check"></i> 可选反馈原则：开启闪白或完全静默</li>
+                        <li><i class="fas fa-check"></i> 配置简单：需要时才显现的极简设置</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 对比 -->
+        <section class="comparison-section" id="comparison">
+            <h2 class="section-title fade-in">为何选择 Nothing Screenshot？</h2>
+            <div class="comparison-cards">
+                <div class="comparison-card glass-effect fade-in delay-1">
+                    <div class="comparison-header">
+                        <h3 class="comparison-title">Nothing Screenshot</h3>
+                        <span class="badge badge-nothing">更快 · 更小 · 更智能</span>
+                    </div>
+                    <div class="workflow">
+                        <div class="workflow-title">瞬间记录流程：</div>
+                        <div class="workflow-steps">
+                            <div class="step step-nothing">
+                                <div class="step-number">1</div>
+                                <div class="step-text">按下快捷键 (Ctrl+Shift+S)</div>
+                            </div>
+                            <div class="step step-nothing">
+                                <div class="step-number">2</div>
+                                <div class="step-text">屏幕微光一闪（可选）</div>
+                            </div>
+                            <div class="step step-nothing">
+                                <div class="step-number">3</div>
+                                <div class="step-text">继续你的世界</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="advantage-list" style="margin-top: 30px;">
+                        <li><i class="fas fa-check"></i> 操作步骤：1步（按键）</li>
+                        <li><i class="fas fa-check"></i> 注意力中断：几乎为零</li>
+                        <li><i class="fas fa-check"></i> 心理安全感：肌肉记忆信任</li>
+                        <li><i class="fas fa-check"></i> 内存占用：&lt; 10MB</li>
+                    </div>
+                </div>
+                
+                <div class="comparison-card glass-effect fade-in delay-2">
+                    <div class="comparison-header">
+                        <h3 class="comparison-title">传统工具</h3>
+                        <span class="badge badge-traditional">更慢 · 更臃肿 · 更干扰</span>
+                    </div>
+                    <div class="workflow">
+                        <div class="workflow-title">繁琐的操作流程：</div>
+                        <div class="workflow-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">按下截图键</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">等待工具响应</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">选择截图区域</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">确认保存</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">收到完成提示</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">返回原操作</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="advantage-list" style="margin-top: 30px;">
+                        <li><i class="fas fa-times"></i> 操作步骤：3-6步</li>
+                        <li><i class="fas fa-times"></i> 注意力中断：显著</li>
+                        <li><i class="fas fa-times"></i> 确认负担：需要确认</li>
+                        <li><i class="fas fa-times"></i> 内存占用：50-100MB+</li>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA区域 -->
+        <section class="cta-section" id="download">
+            <h2 class="cta-title fade-in">为那些值得记录的瞬间而生</h2>
+            <p class="cta-subtitle fade-in delay-1">
+                按下快捷键，让瞬间永恒，让体验继续。Nothing Screenshot 专为追求效率和简洁的用户设计，摒弃一切不必要的功能，专注于提供最快、最小的截图体验。
+            </p>
+            
+            <div class="cta-buttons fade-in delay-2">
+                <a href="https://github.com/WEI-STUDIO4/Nothing-Screenshot/releases/download/%E5%B0%8F%E8%BF%AD%E4%BB%A3/NothingScreenshot.exe" class="btn btn-primary">
+                    <i class="fas fa-download"></i> 立即下载 NothingScreenshot.exe
+                </a>
+                <a href="https://github.com/WEI-STUDIO4/Nothing-Screenshot" class="btn btn-secondary">
+                    <i class="fab fa-github"></i> 查看 GitHub 源码
+                </a>
+            </div>
+            
+            <div class="download-info glass-effect fade-in delay-3">
+                <h4>🎯 直接可执行文件，无需配置</h4>
+                <ul>
+                    <li><i class="fas fa-check"></i> 无需安装 Python 环境，双击即可运行</li>
+                    <li><i class="fas fa-check"></i> 已包含所有依赖库，开箱即用</li>
+                    <li><i class="fas fa-check"></i> 适合不想配置环境的普通用户</li>
+                    <li><i class="fas fa-check"></i> 体积小巧，仅需 2MB 空间</li>
+                </ul>
+            </div>
+            
+            <div class="requirements fade-in delay-4">
+                <p><i class="fas fa-terminal"></i> 开发者安装: <code>pip install pyautogui keyboard pillow pystray pywin32</code></p>
+                <p><i class="fas fa-code"></i> 源码运行: <code>python nothing_screenshot.py</code></p>
+                <p><i class="fas fa-desktop"></i> 支持 Windows 10/11 · 可执行文件无需额外环境</p>
+            </div>
+        </section>
+        
+        <!-- 开发者抖音 -->
+        <section class="developer-section" id="developer">
+            <div class="developer-card glass-effect fade-in delay-1">
+                <h2 class="developer-title"><i class="fab fa-tiktok"></i> 开发者的抖音</h2>
+                <p class="developer-description">
+                    我是这个项目的开发者，平时喜欢分享技术心得、开发日常和生活趣事。
+                    如果你对这个项目感兴趣，或者想交流技术、交个朋友，欢迎关注我的抖音！
+                </p>
+                <a href="https://www.douyin.com/user/MS4wLjABAAAA77ItWBrngO8rL_LK7sbHyRFdiqePAiaUCIcmvXY9Ycphpr54Yz89p6L0JUaMwzVL?from_tab_name=main" class="developer-link" target="_blank">
+                    <i class="fab fa-tiktok"></i> 关注开发者的抖音（交友交友！）
+                </a>
+            </div>
+        </section>
+        
+        <!-- 页脚 -->
+        <footer class="fade-in delay-5">
+            <div class="footer-links">
+                <a href="https://github.com/WEI-STUDIO4/Nothing-Screenshot"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://github.com/WEI-STUDIO4/Nothing-Screenshot/issues"><i class="fas fa-bug"></i> 报告问题</a>
+                <a href="https://github.com/WEI-STUDIO4/Nothing-Screenshot/releases"><i class="fas fa-download"></i> 所有版本</a>
+                <a href="https://www.douyin.com/user/MS4wLjABAAAA77ItWBrngO8rL_LK7sbHyRFdiqePAiaUCIcmvXY9Ycphpr54Yz89p6L0JUaMwzVL?from_tab_name=main" target="_blank"><i class="fab fa-tiktok"></i> 开发者抖音</a>
+            </div>
+            <p>Nothing Screenshot 無 &copy; 2023 · WEI-STUDIO4 · 让截图回归简洁</p>
+            <p style="margin-top: 20px; font-size: 0.9rem; color: rgba(255,255,255,0.5);">设计灵感来源于"无"的哲学理念 —— 少即是多，存在但不彰显</p>
+            <p style="margin-top: 5px; font-size: 0.8rem; color: rgba(255,255,255,0.4);">from deepseek v3.2＆Fly.</p>
+        </footer>
+    </div>
+
+    <script>
+        // 创建动态光点
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机大小
+                const size = Math.random() * 4 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机位置
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // 随机动画延迟
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                
+                // 随机动画持续时间
+                const duration = Math.random() * 10 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // 滚动动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建背景光点
+            createParticles();
+            
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.style.animationPlayState = 'running';
+                    }
+                });
+            };
+            
+            // 初始显示
+            fadeInOnScroll();
+            
+            // 监听滚动
+            window.addEventListener('scroll', fadeInOnScroll);
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
